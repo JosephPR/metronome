@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import click1 from './click1.wav';
-import click2 from './click2.wav';
+import DrumKit from '../Components/drum-kit'
+import click1 from './Sounds/click1.wav';
+import click2 from './Sounds/click2.wav';
 
 import './metronome.css';
 
@@ -15,6 +16,23 @@ export default class Metronome extends Component {
     }
     this.click1 = new Audio(click1);
     this.click2 = new Audio(click2);
+  };
+
+
+    playClick = () => {
+    const { count, beatsPerMeasure } = this.state;
+
+    // The first beat will have a different sound than the others
+    if (count % beatsPerMeasure === 0) {
+      this.click2.play();
+    } else {
+      this.click1.play();
+    }
+
+    // Keep track of which beat we're on
+    this.setState(state => ({
+      count: (state.count + 1) % state.beatsPerMeasure
+    }));
   };
 
   handleBpmChange = event => {
@@ -36,21 +54,6 @@ export default class Metronome extends Component {
     }
   };
 
-  playClick = () => {
-  const { count, beatsPerMeasure } = this.state;
-
-  // The first beat will have a different sound than the others
-  if (count % beatsPerMeasure === 0) {
-    this.click2.play();
-  } else {
-    this.click1.play();
-  }
-
-  // Keep track of which beat we're on
-  this.setState(state => ({
-    count: (state.count + 1) % state.beatsPerMeasure
-  }));
-};
 
   startStop = () => {
     if (this.state.playing) {
@@ -79,6 +82,7 @@ export default class Metronome extends Component {
   render() {
     const { playing, bpm } = this.state;
     return (
+      <>
       <div className='metronome'>
         <div className='bpm-slider'>
           <div>{bpm} BPM</div>
@@ -86,6 +90,8 @@ export default class Metronome extends Component {
         </div>
           <button onClick={this.startStop}>{playing ? 'Stop' : 'Start'}</button>
       </div>
+      <DrumKit />
+      </>
     )
   }
 }
